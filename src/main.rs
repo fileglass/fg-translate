@@ -41,7 +41,6 @@ fn main() {
     println!("What language would you like to translate to? (use the shorthands, refer to: https://www.w3.org/International/O-charset-lang.html)");
     readCli(&mut line);
     line = line.trim().to_string();
-    println!("{}", line);
     if line == "en" {
         println!("We already have locales for this language :( \n \n \n \n");
         main();
