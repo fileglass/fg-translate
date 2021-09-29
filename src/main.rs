@@ -14,7 +14,7 @@ fn fetchLocale(key: &str) -> Result<String, reqwest::Error> {
 
 
 fn getLocale(loc: &str) {
-    println!("Please input your Fileglass API key to download the translation file");
+    println!("Please input your Fileglass API key to download the translation file.");
     let mut apikey = String::new();
     readCli(&mut apikey);
     let mut locale = fetchLocale(&apikey).unwrap();
@@ -30,6 +30,7 @@ fn getLocale(loc: &str) {
         locale = str::replace(&locale, "TRANSLATIONS_EN", &format!("TRANSLATIONS_{}", loc.to_uppercase()));
         let replaced = formatter::createEmptyEntries(&mut locale);
         writer::writeToPath(&format!("{}/locale_{}.ts", path, loc), &replaced);
+        println!("Finished, happy translating! <3");
     }
 }
 
