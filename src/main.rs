@@ -1,56 +1,31 @@
-use reqwest;
-mod validator;
-mod writer;
-mod formatter;
-fn readCli(mut line: &mut String) {
-   std::io::stdin().read_line(&mut line).unwrap();
-}
+mod utils;
+mod create;
+mod publish;
+mod check;
+use ansi_term::Colour::Green;
+use create::entry::createNew;
+use utils::shared::readCli;
+use utils::terminal;
+use publish::entry::publishLocale;
+use check::entry::checkTranslation;
 
-fn fetchLocale(key: &str) -> Result<String, reqwest::Error> {
-    let text = reqwest::blocking::get(format!("https://api.file.glass/v3/common/translation?access_key={}", key))?.text()?;
-    Ok(text)
-}
-
-
-
-fn getLocale(loc: &str) {
-    println!("Please input your Fileglass API key to download the translation file.");
-    let mut apikey = String::new();
-    readCli(&mut apikey);
-    let mut locale = fetchLocale(&apikey).unwrap();
-    if locale.contains("ERR_INVALID_APIKEY") { //bad solution
-        println!("Invalid API key! \n");
-        getLocale(&loc);
-    } else {
-        println!("Locale downloaded, please input a path where you want your files to be saved.");
-        let mut path = String::new();
-        readCli(&mut path);
-        path = path.trim().to_string();
-        writer::writeToPath(&format!("{}/locale_en.ts", path), &locale);
-        locale = str::replace(&locale, "TRANSLATIONS_EN", &format!("TRANSLATIONS_{}", loc.to_uppercase()));
-        let replaced = formatter::createEmptyEntries(&mut locale);
-        writer::writeToPath(&format!("{}/locale_{}.ts", path, loc), &replaced);
-        println!("Finished, happy translating! <3");
-    }
-}
 
 
 fn main() {
-    println!("Hello there!");
-    println!("Thank you for helping us translate Fileglass, let's begin!");
+    terminal::green("Hello there!");
+    terminal::cyan("Thank you for helping us translate Fileglass, let's begin!");
+    terminal::cyan("First, please choose what would you like to do.");
+    println!(">> {} - Create new translation in a selected language", Green.paint("new"));
+    println!(">> {} - Publish a translation file for review to the Fileglass team", Green.paint("publish"));
+    println!(">> {} - Check for missing keys in you locale", Green.paint("check"));
     let mut line = String::new();
-    println!("What language would you like to translate to? (use the shorthands, refer to: https://www.w3.org/International/O-charset-lang.html)");
     readCli(&mut line);
     line = line.trim().to_string();
-    if line == "en" {
-        println!("We already have locales for this language :( \n \n \n \n");
-        main();
-    } else {
-        if validator::isCodeValid(&line) {
-            getLocale(&line);
-        } else {
-            println!("{} is not a valid langauge code! \n \n \n \n", line);
-            main()
-        }
+    if line == "new" {
+        createNew();
+    } else if line == "publish" { //prime example of how not to make CLIs
+        publishLocale();
+    } else if line == "check" {
+        checkTranslation();
     }
 }
