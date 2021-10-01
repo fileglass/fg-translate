@@ -4,7 +4,7 @@ use crate::utils::reader::readPath;
 use crate::utils::validator::isCodeValid;
 use crate::publish::fromname::getLocaleFromName;
 use crate::publish::request::uploadFile;
-
+use crate::utils::shared::isPathAndTsFile;
 fn upload(path: &str) {
     let mut apiKey = String::new();
     terminal::cyan("Please input your Fileglass API key to upload the translation file.");
@@ -29,6 +29,10 @@ pub fn publishLocale() {
     terminal::cyan("Please input the path to your translation file.");
     readCli(&mut path);
     path = path.trim().to_string();
+    if !isPathAndTsFile(&path) {
+        terminal::red(&format!("{} is not a TypeScript file!", path));
+        return publishLocale();
+    }
     let file = readPath(&path);
     let name = getLocaleFromName(&path);
     if !isCodeValid(&name) {
