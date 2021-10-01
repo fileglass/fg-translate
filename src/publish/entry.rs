@@ -35,6 +35,10 @@ pub fn publishLocale() {
     }
     let file = readPath(&path);
     let name = getLocaleFromName(&path);
+    if name.len() == 0 {
+        terminal::yellow("The locale name is not parsable from your filename, please rename it like locale_code.ts");
+        return publishLocale()
+    }
     if !isCodeValid(&name) {
         terminal::red(&format!("{} is not a valid language code! \n \n \n \n", name));
         return publishLocale()
