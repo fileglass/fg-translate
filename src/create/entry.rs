@@ -28,7 +28,7 @@ fn getLocale(loc: &str) {
 
 pub fn createNew() {
     let mut line = String::new();
-    terminal::cyan("What language would you like to translate to? (use the shorthands, refer to: https://www.w3.org/International/O-charset-lang.html)");
+    terminal::cyan("What language would you like to translate to? (use the shorthands, refer to: https://gist.github.com/ndbroadbent/588fefab8e0f1b459fcec8181b41b39c)");
     readCli(&mut line);
     line = line.trim().to_string();
     if line == "en" {
